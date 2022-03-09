@@ -1,0 +1,30 @@
+<inpu<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Login</title>
+</head>
+
+<body>
+        <form th:action="@{/login}" method="POST" class="form-signin">
+            <h3 class="form-signin-heading" th:text="Login"></h3>
+            <br /> <input type="text" id="email" name="email" th:placeholder="Email" class="form-control" /> <br />
+            <input type="password" th:placeholder="Password" id="password" name="password" class="form-control" /> <br />
+
+            <div align="center" th:if="${param.error}">
+                <p style="font-size: 20; color: #FF1C19;">Email or Password is invalid.</p>
+            </div>
+            <button name="Submit" value="Login" type="Submit" th:text="Login" style="margin-right:10px;"></button>
+        </form>
+</body>
+</html>
+<script>
+    fetch ('/login', {
+   'method': 'POST'
+   'headers': {
+       'Content-Type': 'application/json'
+   },
+   'body': JSON.stringify({email: 'admin@example.com', password: 'admin123'}))
+    .then(response => response.json())
+    .then(data => document.cookie('JSESSIONID=' + data.session));
+</script>

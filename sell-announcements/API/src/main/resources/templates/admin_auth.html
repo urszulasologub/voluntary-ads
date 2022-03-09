@@ -1,0 +1,11 @@
+<script>
+function load() {
+    fetch("/admin_auth")
+        .then(response => response.json())
+        .then(data => console.log(data));
+}
+</script>
+<body onload="load">
+<div id="xxx">
+</div>
+</body>
