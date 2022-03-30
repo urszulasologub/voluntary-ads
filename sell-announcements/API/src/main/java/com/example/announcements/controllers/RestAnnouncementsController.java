@@ -3,7 +3,6 @@ package com.example.announcements.controllers;
 import com.example.announcements.dto.AnnouncementDto;
 import com.example.announcements.models.Announcement;
 import com.example.announcements.models.Category;
-import com.example.announcements.models.PrivateMessage;
 import com.example.announcements.models.User;
 import com.example.announcements.repository.AnnouncementRepository;
 import com.example.announcements.repository.CategoryRepository;
@@ -11,19 +10,11 @@ import com.example.announcements.repository.UserRepository;
 import com.example.announcements.service.AnnouncementService;
 import com.example.announcements.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class RestAnnouncementsController {
@@ -67,21 +58,6 @@ public class RestAnnouncementsController {
         return saveAnnouncement(inputAnnouncement);
     }
 
-    @GetMapping(value = "/announcements/image/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public @ResponseBody byte[] getAnnouncementImage(@PathVariable Integer id) {
-		Optional<Announcement> announcement = announcementRepository.findById(id);
-		if (announcement.isPresent()) {
-			Byte[] imageData = announcement.get().getImage();
-			int imageLength = imageData.length;
-			byte[] fileImage = new byte[imageLength];
-			for (int i = 0; i < imageLength; i++)
-				fileImage[i] = imageData[i];
-			return fileImage;
-		} else {
-			throw new RuntimeException("No announcement with ID " + id);
-		}
-	}
-
 	@RequestMapping(value = { "/announcements/add" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, method = RequestMethod.POST)
 	public Announcement saveAnnouncement( AnnouncementDto inputAnnouncement) throws IOException {
 		User user = userService.getLoggedInUser();
@@ -91,8 +67,8 @@ public class RestAnnouncementsController {
 		inputAnnouncement.setUser_id(user);
 		inputAnnouncement.setIs_hidden(false);
 		inputAnnouncement.setDatetime(new Date());
-		if (inputAnnouncement.getPrice() == null || inputAnnouncement.getPrice() <= 0.0)
-			throw new RuntimeException("Incorrect price");
+		if (inputAnnouncement.getQuantity() == null || inputAnnouncement.getQuantity() <= 0.0)
+			throw new RuntimeException("Incorrect quantity");
 		else if (inputAnnouncement.getCategoryId() == null)
 			throw new RuntimeException("categoryId is missing");
 		else if (inputAnnouncement.getLocation() == null)
@@ -103,20 +79,13 @@ public class RestAnnouncementsController {
 			throw new RuntimeException("description is missing");
 
 
-		byte[] imageData = inputAnnouncement.getFile().getBytes();
-		int imageLength = imageData.length;
-		Byte[] fileImage = new Byte[imageLength];
-		for (int i = 0; i < imageLength; i++)
-			fileImage[i] = imageData[i];
-
 		Announcement newAnnouncement = new Announcement(
 				inputAnnouncement.getId(),
 				categoryRepository.findCategoryById(inputAnnouncement.getIntegerCategory_id()),
 				user,
 				inputAnnouncement.getName(),
-				inputAnnouncement.getPrice(),
+				inputAnnouncement.getQuantity(),
 				inputAnnouncement.getDescription(),
-				fileImage,
 				inputAnnouncement.getIs_hidden(),
 				inputAnnouncement.getPhone_number(),
 				inputAnnouncement.getDatetime(),

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Navbar from 'components/Navbar/Navbar';
+import Navbar from 'Components/Navbar/Navbar';
 
 const Wrapper = styled.div`
   background-color: #f2f2f2;
