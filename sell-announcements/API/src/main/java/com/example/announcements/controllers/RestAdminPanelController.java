@@ -36,15 +36,15 @@ public class RestAdminPanelController {
 
     @RequestMapping(value = { "admin/statistics"}, method = RequestMethod.GET)
     public Map<LocalDate, Integer> getStatisticsFromThisWeek() {
-		Map<LocalDate, Integer> result = new TreeMap<>();
-		LocalDate today = LocalDate.now();
-		LocalDate weekAgo = LocalDate.now().minusDays(6);
-		for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
-			result.put(date, 0);
-		}
-		for (Announcement ann : announcementRepository.findAll()) {
-			for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
-			    try {
+        Map<LocalDate, Integer> result = new TreeMap<>();
+        LocalDate today = LocalDate.now();
+        LocalDate weekAgo = LocalDate.now().minusDays(6);
+        for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
+            result.put(date, 0);
+        }
+        for (Announcement ann : announcementRepository.findAll()) {
+            for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
+                try {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(ann.getDatetime());
                     LocalDate announcementDate = LocalDate.of(cal.get(Calendar.YEAR),
@@ -54,10 +54,10 @@ public class RestAdminPanelController {
                         result.put(date, result.get(date) + 1);
                     }
                 } catch (Exception e) {
-			        e.printStackTrace();
+                    e.printStackTrace();
                 }
-			}
-		}
+            }
+        }
         return result;
     }
 
@@ -82,75 +82,75 @@ public class RestAdminPanelController {
             user.setEmail("user@example.com");
             user.setPassword("user123");
             userService.saveUser(user);
-            Category medicalCategory = new Category();
-            medicalCategory.setName("Medical");
-            categoryRepository.save(medicalCategory);
-            Category equipmentCategory = new Category();
-            equipmentCategory.setName("Equipment");
-            categoryRepository.save(equipmentCategory);
+            Category transportCategory = new Category();
+            transportCategory.setName("Transport");
+            categoryRepository.save(transportCategory);
+            Category dwellingCategory = new Category();
+            dwellingCategory.setName("Dwelling");
+            categoryRepository.save(dwellingCategory);
 
-            Announcement bandagesAnnouncement = new Announcement();
-            bandagesAnnouncement.setCategory_id(medicalCategory);
-            bandagesAnnouncement.setName("Bandages");
-            bandagesAnnouncement.setUser_id(admin);
-            bandagesAnnouncement.setLocation("Lodz");
-            bandagesAnnouncement.setPhone_number("123456789");
-            bandagesAnnouncement.setQuantity((float) 100);
-            bandagesAnnouncement.setDescription("100 rolls of 10 meters of a standard bandage. 25 spike-clamps included.");
-            bandagesAnnouncement.setIs_hidden(false);
-            bandagesAnnouncement.setDatetime(new Date());
-            announcementRepository.save(bandagesAnnouncement);
+            Announcement busTransportAnnouncement = new Announcement();
+            busTransportAnnouncement.setCategory_id(transportCategory);
+            busTransportAnnouncement.setName("Bus Transport");
+            busTransportAnnouncement.setUser_id(admin);
+            busTransportAnnouncement.setLocation("Korczowa");
+            busTransportAnnouncement.setPhone_number("123456789");
+            busTransportAnnouncement.setQuantity((float) 30);
+            busTransportAnnouncement.setDescription("I own a bus, I offer transport from Korczowa border area to Warsaw and any city en-route");
+            busTransportAnnouncement.setIs_hidden(false);
+            busTransportAnnouncement.setDatetime(new Date());
+            announcementRepository.save(busTransportAnnouncement);
 
-            Announcement painkillersAnnouncement = new Announcement();
-            painkillersAnnouncement.setCategory_id(medicalCategory);
-            painkillersAnnouncement.setName("PAINKILLERS: Paracetamol, 10 tablet packets");
-            painkillersAnnouncement.setUser_id(user);
-            painkillersAnnouncement.setLocation("Warsaw");
-            painkillersAnnouncement.setPhone_number("123000789");
-            painkillersAnnouncement.setQuantity((float) 200.0);
-            painkillersAnnouncement.setDescription("Bulk quantity of paracetamol tablets, packaged in standard 10 piece leaves.");
-            painkillersAnnouncement.setIs_hidden(false);
-            painkillersAnnouncement.setDatetime(new Date());
-            announcementRepository.save(painkillersAnnouncement);
+            Announcement packageTransportAnnouncement = new Announcement();
+            packageTransportAnnouncement.setCategory_id(transportCategory);
+            packageTransportAnnouncement.setName("Package transport");
+            packageTransportAnnouncement.setUser_id(user);
+            packageTransportAnnouncement.setLocation("Warsaw");
+            packageTransportAnnouncement.setPhone_number("123000789");
+            packageTransportAnnouncement.setQuantity((float) 28);
+            packageTransportAnnouncement.setDescription("I can transport any package smaller than 1m each dimension to any of: Kiev, Lviv, Odessa");
+            packageTransportAnnouncement.setIs_hidden(false);
+            packageTransportAnnouncement.setDatetime(new Date());
+            announcementRepository.save(packageTransportAnnouncement);
 
-            Announcement macbookAnnouncement = new Announcement();
-            macbookAnnouncement.setCategory_id(equipmentCategory);
-            macbookAnnouncement.setName("Camera drone");
-            macbookAnnouncement.setUser_id(admin);
-            macbookAnnouncement.setLocation("Lodz");
-            macbookAnnouncement.setPhone_number("123456789");
-            macbookAnnouncement.setQuantity((float) 1);
-            macbookAnnouncement.setDescription("A commercial camera drone, spare batteries and 512 GB SD card included");
-            macbookAnnouncement.setIs_hidden(false);
-            macbookAnnouncement.setDatetime(new Date());
-            announcementRepository.save(macbookAnnouncement);
+            Announcement hrubieszowAnnouncement = new Announcement();
+            hrubieszowAnnouncement.setCategory_id(dwellingCategory);
+            hrubieszowAnnouncement.setName("Free rooms");
+            hrubieszowAnnouncement.setUser_id(admin);
+            hrubieszowAnnouncement.setLocation("Hrubieszów");
+            hrubieszowAnnouncement.setPhone_number("123456789");
+            hrubieszowAnnouncement.setQuantity((float) 1);
+            hrubieszowAnnouncement.setDescription("I have 4 people worth of space, near Hrubieszów. Message for details.");
+            hrubieszowAnnouncement.setIs_hidden(false);
+            hrubieszowAnnouncement.setDatetime(new Date());
+            announcementRepository.save(hrubieszowAnnouncement);
 
-            Announcement laptopAnnouncement = new Announcement();
-            laptopAnnouncement.setCategory_id(equipmentCategory);
-            laptopAnnouncement.setName("Night vision googles");
-            laptopAnnouncement.setUser_id(user);
-            laptopAnnouncement.setLocation("50.276606490316944, 23.58824000577511");
-            laptopAnnouncement.setPhone_number("123000789");
-            laptopAnnouncement.setQuantity((float) 100);
-            laptopAnnouncement.setDescription("Bulk quantity of night vision googles 'legally appropriated' from a nearby military encampment. About 100 devices, one time sale");
-            laptopAnnouncement.setIs_hidden(false);
-            laptopAnnouncement.setDatetime(new Date());
-            announcementRepository.save(laptopAnnouncement);
+            Announcement zamoscAnnouncement = new Announcement();
+            zamoscAnnouncement.setCategory_id(dwellingCategory);
+            zamoscAnnouncement.setName("House for rent CHEAP");
+            zamoscAnnouncement.setUser_id(user);
+            zamoscAnnouncement.setLocation("50.71157202495769, 23.28084820760046");
+            zamoscAnnouncement.setPhone_number("123000789");
+            zamoscAnnouncement.setQuantity((float) 100);
+            zamoscAnnouncement.setDescription("I have a free house in Zamość, i can rent for very cheap, the house is big enough for three families.");
+            zamoscAnnouncement.setIs_hidden(false);
+            zamoscAnnouncement.setDatetime(new Date());
+            announcementRepository.save(zamoscAnnouncement);
 
             PrivateMessage message1 = new PrivateMessage();
             message1.setBuyer(user);
-            message1.setSeller(bandagesAnnouncement.getUser_id() == user);
+            message1.setSeller(busTransportAnnouncement.getUser_id() == user);
             message1.setDatetime(new Date());
-            message1.setMessage("Hello i'd like to acquire 10 rolls");
-            message1.setAnnouncement_id(bandagesAnnouncement);
+            message1.setMessage("I'd like to request 3 spots");
+            message1.setAnnouncement_id(busTransportAnnouncement);
             privateMessageRepository.save(message1);
 
             PrivateMessage message2 = new PrivateMessage();
             message2.setBuyer(user);
-            message2.setSeller(painkillersAnnouncement.getUser_id() == user);
+            message2.setSeller(packageTransportAnnouncement.getUser_id() == user);
             message2.setDatetime(new Date());
-            message2.setMessage("I require all of this. please acknowledge");
-            message2.setAnnouncement_id(painkillersAnnouncement);
+            message2.setMessage("I have a package that's 1.05m long, can i still commission you?");
+            message2.setAnnouncement_id(packageTransportAnnouncement);
             privateMessageRepository.save(message2);
 
         } catch (Exception e) {
