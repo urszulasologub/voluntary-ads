@@ -111,7 +111,7 @@ const AnnouncementShowPage = value => {
             <Wrapper>
               <TitleWrapper>
                 <StyledName>{data.name}</StyledName>
-                <StyledQuantity>{data.quantity}</StyledQuantity>
+                <StyledQuantity>Quantity: {data.quantity}</StyledQuantity>
                 <StyledLocation>location: {data.location}</StyledLocation>
                 <StyledLocation>phone number: {data.phone_number}</StyledLocation>
               </TitleWrapper>
