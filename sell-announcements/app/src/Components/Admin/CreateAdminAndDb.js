@@ -7,7 +7,7 @@ import { REMOTE_HOST } from 'config';
 import { Context } from 'Components/data/Store';
 
 const CreateAdminAndDb = () => {
-  const [state] = useContext(Context);
+  const [state, dispatch] = useContext(Context);
   const history = useHistory();
 
   const OnSampleDatabase = () => {
@@ -22,6 +22,7 @@ const CreateAdminAndDb = () => {
 
     axios(options).then(e => {
       history.push('/');
+      dispatch({ type: 'LOGOUT' });
     });
   };
 

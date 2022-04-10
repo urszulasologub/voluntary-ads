@@ -249,9 +249,13 @@ public class RestAdminPanelController {
     @RequestMapping(value = {"/admin_category/delete/{category_id}"}, method = RequestMethod.DELETE)
     public Map<String, String> deleteCategory(@PathVariable("category_id") Integer category_id) {
         Map<String, String> result = new HashMap<>();
-        Optional <Category> category = categoryRepository.findById(category_id);
+        Optional<Category> category = categoryRepository.findById(category_id);
         if (category.isPresent()) {
-            categoryRepository.delete(category.get());
+            try {
+                categoryRepository.delete(category.get());
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+            }
             result.put("result", "success");
         } else {
             result.put("result", "failure");
