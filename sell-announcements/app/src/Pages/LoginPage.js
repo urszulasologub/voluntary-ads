@@ -17,15 +17,15 @@ const LoginPage = () => {
   const [, dispatch] = useContext(Context);
   const history = useHistory();
 
+  const passwordMinLength = 5;
   let loginSchema = yup.object().shape({
     email: yup
       .string()
-      .email()
-      .required(),
+      .required('E-mail is required'),
     password: yup
       .string()
-      .min(5)
-      .required(),
+      .min(passwordMinLength, `Password must be at least ${passwordMinLength} characters long`)
+      .required('Password is required'),
   });
 
   const { register, handleSubmit, errors, setError } = useForm({
@@ -52,30 +52,30 @@ const LoginPage = () => {
 
   return (
     <AuthTemplate>
-      <h1>sign in</h1>
+      <h1>Log In</h1>
       <StyledForm className={classes.root} onSubmit={handleSubmit(onSubmit)}>
         <TextField
           name="email"
           inputRef={register}
-          label="email"
+          label="E-mail"
           fullWidth
-          error={errors.email ? true : false}
+          error={!!errors.email}
           helperText={errors.email ? errors.email.message : ''}
         />
         <TextField
           name="password"
           inputRef={register}
-          label="password"
+          label="Password"
           type="password"
           fullWidth
-          error={errors.password ? true : false}
+          error={!!errors.password}
           helperText={errors.password ? errors.password.message : ''}
         />
         <StyledButton variant="contained" type="submit">
-          sign in
+          SIGN IN
         </StyledButton>
         <StyledMaterialLink component={Link} to="/register">
-          Dou do not have an account?
+          Register
         </StyledMaterialLink>
       </StyledForm>
     </AuthTemplate>
