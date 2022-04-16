@@ -7,4 +7,5 @@ public interface UserService {
 	boolean isUserAlreadyPresent(User user);
 	User getLoggedInUser();
 	User saveAdminUser(User user);
+	User seedUser(String email, String password, boolean isAdmin);
 }

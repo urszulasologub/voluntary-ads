@@ -59,7 +59,7 @@ public class UserServiceImp implements UserService {
 		}
 	}
 
-	private void seedUser(String email, String password, boolean isAdmin) {
+	public User seedUser(String email, String password, boolean isAdmin) {
 		User user = new User();
 		user.setEmail(email);
 		user.setPassword(password);
@@ -68,8 +68,10 @@ public class UserServiceImp implements UserService {
 		} else {
 			saveUser(user);
 		}
+		return user;
 	}
 
+	// This method is not really related to the user, but it is necessary for it to work
 	private void seedDefaultCategory() {
 		if (categoryRepository.count() == 0) {
 			Category category = new Category();

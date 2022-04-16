@@ -74,14 +74,8 @@ public class RestAdminPanelController {
             categoryRepository.flush();
             userRepository.deleteAll();
             userRepository.flush();
-            User admin = new User();
-            admin.setEmail("admin@example.com");
-            admin.setPassword("admin123");
-            userService.saveAdminUser(admin);
-            User user = new User();
-            user.setEmail("user@example.com");
-            user.setPassword("user123");
-            userService.saveUser(user);
+            User admin = userService.seedUser("admin@example.com", "admin123", true);
+            User user = userService.seedUser("user@example.com", "admin123", false);
             Category transportCategory = new Category();
             transportCategory.setName("Transport");
             categoryRepository.save(transportCategory);
