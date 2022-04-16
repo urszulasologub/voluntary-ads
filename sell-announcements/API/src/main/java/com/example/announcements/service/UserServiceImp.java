@@ -38,7 +38,7 @@ public class UserServiceImp implements UserService {
 	private void postConstruct() {
 		seedDefaultUserRoles();
 		seedDefaultUsers();
-		seedDefaultCategory("Default Advertisement");
+		seedDefaultCategory();
 	}
 
 	private void seedDefaultUserRoles() {
@@ -70,10 +70,12 @@ public class UserServiceImp implements UserService {
 		}
 	}
 
-	private void seedDefaultCategory(String name) {
-		Category category = new Category();
-		category.setName(name);
-		categoryRepository.save(category);
+	private void seedDefaultCategory() {
+		if (categoryRepository.count() == 0) {
+			Category category = new Category();
+			category.setName("Default Advertisement");
+			categoryRepository.save(category);
+		}
 	}
 
 	@Override
