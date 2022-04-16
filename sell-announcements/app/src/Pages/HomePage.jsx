@@ -29,7 +29,7 @@ const HomePage = () => {
 
     axios(options).then(e => {
       let d = e.data.map(el => ({ value: el.id, label: el.name }));
-      d.push({ value: -10, label: 'SELECT Category' });
+      d.push({ value: -10, label: 'All Categories' });
       setCategory(d);
     });
   }, []);
@@ -79,7 +79,18 @@ const HomePage = () => {
       <Wrapper>
         {error ? <Alert severity="error">{error}</Alert> : null}
         {loading ? <StyledCircularProgress /> : null}
-        <h4>Announcement:</h4>
+        <h4>Announcements</h4>
+        <TextFieldWrapper>
+          {category && selectCategory.value ? (
+            <TextField id="standard-select-category" select value={selectCategory.value} onChange={handleChange} fullWidth>
+              {category.map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          ) : null}
+        </TextFieldWrapper>
         <TextFieldWrapper>
           <TextField
             name="search"
@@ -90,15 +101,6 @@ const HomePage = () => {
               filter(e.target.value);
             }}
           />
-          {category && selectCategory.value ? (
-            <TextField id="standard-select-category" select value={selectCategory.value} onChange={handleChange} fullWidth>
-              {category.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          ) : null}
         </TextFieldWrapper>
         {displayData ? displayData.map(el => <AnnouncementItem data={el} key={el.id} />) : null}
       </Wrapper>
@@ -113,7 +115,7 @@ const StyledCircularProgress = styled(CircularProgress)`
 `;
 
 const TextFieldWrapper = styled.div`
-  margin: 10px auto;
+  margin-bottom: 30px;
   width: 50%;
 `;
 
