@@ -35,7 +35,7 @@ const Navbar = () => {
               history.push('/');
             }}
           >
-            Announcements
+            Help UA
           </Typography>
           {state.token ? (
             <>
