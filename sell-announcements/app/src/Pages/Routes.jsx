@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import AboutPage from 'Pages/AboutPage';
 import HomePage from 'Pages/HomePage';
 import LoginPage from 'Pages/LoginPage';
 import CreateAdminPage from 'Pages/CreateAdminPage';
@@ -14,7 +15,8 @@ const Routes = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/" component={AboutPage} />
+        <Route exact path="/announcements" component={HomePage} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/announcements/:id" component={AnnouncementShowPage} />
