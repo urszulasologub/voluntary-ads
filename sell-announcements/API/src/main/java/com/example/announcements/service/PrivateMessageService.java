@@ -7,7 +7,6 @@ import com.example.announcements.models.User;
 import java.util.List;
 
 public interface PrivateMessageService {
-
-	public List<PrivateMessage> getConversationWithUser(Announcement announcement_id, User buyer_id);
-	public List<User> getUsersWhoSentMessageToAnnouncement(Announcement announcement_id);
+	List<PrivateMessage> getConversationWithUser(Announcement announcement_id, User buyer_id);
+	List<User> getUsersWhoSentMessageToAnnouncement(Announcement announcement_id);
 }

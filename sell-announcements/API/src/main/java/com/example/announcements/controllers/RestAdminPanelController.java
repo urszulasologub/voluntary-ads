@@ -16,8 +16,6 @@ import java.util.*;
 
 @RestController
 public class RestAdminPanelController {
-
-
     @Autowired
     UserRepository userRepository;
 
