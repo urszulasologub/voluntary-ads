@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
 import { REMOTE_HOST } from 'config';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 import Button from '@material-ui/core/Button';
 
 const MessageInput = ({ addId, owner, id, setMessages }) => {

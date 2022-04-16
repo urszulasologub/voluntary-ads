@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import Message from 'components/Message/Message';
+import Message from 'Components/Message/Message';
 import { REMOTE_HOST } from 'config';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 
 const MessageBox = ({ data }) => {
   const [state] = useContext(Context);

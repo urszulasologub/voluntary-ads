@@ -5,14 +5,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
   appBar: {
-    background: '#126e69',
+    background: '#01579b',
   },
   title: {
     flexGrow: 1,
@@ -35,7 +35,7 @@ const Navbar = () => {
               history.push('/');
             }}
           >
-            SellANN
+            Announcements
           </Typography>
           {state.token ? (
             <>

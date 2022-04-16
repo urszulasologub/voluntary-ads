@@ -7,10 +7,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import noImage from 'assets/noImage.png';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 import { useHistory } from 'react-router-dom';
-import MessageBox from 'components/Message/MessageBox';
+import MessageBox from 'Components/Message/MessageBox';
 
 const AnnouncementShowPage = value => {
   const [data, setData] = useState(null);
@@ -110,10 +109,9 @@ const AnnouncementShowPage = value => {
             ) : null}
 
             <Wrapper>
-              {data.image ? <Img background={btoa(String.fromCharCode.apply(null, new Uint8Array(data.image)))} /> : <Img />}
               <TitleWrapper>
                 <StyledName>{data.name}</StyledName>
-                <StyledPrice>{data.price} $</StyledPrice>
+                <StyledQuantity>Quantity: {data.quantity}</StyledQuantity>
                 <StyledLocation>location: {data.location}</StyledLocation>
                 <StyledLocation>phone number: {data.phone_number}</StyledLocation>
               </TitleWrapper>
@@ -188,25 +186,13 @@ const Wrapper = styled.div`
   flex-direction: row;
 `;
 
-const Img = styled.div`
-  list-style: none;
-  width: 350px;
-  height: 350px;
-  background-color: #e3e3e3;
-  background-image: url(${({ background }) => (background ? `data:image/png;base64,${background}` : noImage)});
-  background-repeat: no-repeat;
-  background-size: 350px 350px;
-  border-radius: 4px;
-  margin: 15px 0;
-`;
-
 const StyledLocation = styled.div`
   font-size: 15px;
   font-weight: bold;
   margin: 5px 0;
 `;
 
-const StyledPrice = styled.div`
+const StyledQuantity = styled.div`
   font-size: 20px;
   font-weight: bold;
   margin: 10px 0 0;

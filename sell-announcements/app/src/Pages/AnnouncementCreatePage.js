@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import RootTemplate from 'templates/RootTemplate';
-import AnnouncementForm from 'components/Announcement/AnnouncementForm';
+import AnnouncementForm from 'Components/Announcement/AnnouncementForm';
 
 const StyledFromCard = styled.div`
   background-color: white;

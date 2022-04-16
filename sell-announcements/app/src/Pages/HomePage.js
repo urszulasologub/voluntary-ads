@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import RootTemplate from 'templates/RootTemplate';
-import AnnouncementItem from 'components/Announcement/AnnouncementItem';
+import AnnouncementItem from 'Components/Announcement/AnnouncementItem';
 import { REMOTE_HOST } from 'config';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';

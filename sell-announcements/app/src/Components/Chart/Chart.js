@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { REMOTE_HOST } from 'config';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 import styled from 'styled-components';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Alert from '@material-ui/lab/Alert';
@@ -65,7 +65,7 @@ const Chart = () => {
           <XAxis dataKey="day" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="value" fill="#8884d8" />
+          <Bar dataKey="value" fill="#fcd734" />
         </BarChart>
       </ResponsiveContainer>
     </StyledWrapper>

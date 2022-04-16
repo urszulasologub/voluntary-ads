@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { REMOTE_HOST } from 'config';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -45,10 +45,10 @@ const AnnouncementForm = () => {
       .max(50)
       .required()
       .label('Announcement Name'),
-    price: yup
+    quantity: yup
       .number()
       .required()
-      .label('Price'),
+      .label('Quantity'),
     description: yup
       .string()
       .max(5000)
@@ -68,11 +68,10 @@ const AnnouncementForm = () => {
     validationSchema: announcementSchema,
   });
 
-  const onSubmit = ({ name, price, description, phoneNumber, location, file }) => {
+  const onSubmit = ({ name, quantity, description, phoneNumber, location }) => {
     const formData = new FormData();
-    formData.append('file', file[0]);
     formData.append('name', name);
-    formData.append('price', price);
+    formData.append('quantity', quantity);
     formData.append('description', description);
     formData.append('phone_number', phoneNumber);
     formData.append('location', location);
@@ -109,7 +108,6 @@ const AnnouncementForm = () => {
         error={errors.name ? true : false}
         helperText={errors.name ? errors.name.message : ''}
       />
-      <TextField name="file" inputRef={register} type="file" fullWidth error={errors.file ? true : false} helperText={errors.file ? errors.file.message : ''} />
       {category && selectCategory.value ? (
         <TextField
           id="standard-select-category"
@@ -128,14 +126,14 @@ const AnnouncementForm = () => {
         </TextField>
       ) : null}
       <TextField
-        name="price"
+        name="quantity"
         inputRef={register}
-        label="Price"
+        label="Quantity"
         type="number"
         fullWidth
         inputProps={{ min: '0', step: '0.01' }}
-        error={errors.price ? true : false}
-        helperText={errors.price ? errors.price.message : ''}
+        error={errors.quantity ? true : false}
+        helperText={errors.quantity ? errors.quantity.message : ''}
       />
       <TextField
         name="description"

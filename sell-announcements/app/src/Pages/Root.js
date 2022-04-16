@@ -1,7 +1,7 @@
 import React from 'react';
 import GlobalStyle from 'theme/GlobalStyle';
-import Store from 'components/data/Store';
-import Routes from 'pages/Routes';
+import Store from 'Components/data/Store';
+import Routes from 'Pages/Routes';
 
 const Root = () => {
   return (

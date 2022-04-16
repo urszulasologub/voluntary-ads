@@ -9,8 +9,8 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #126e69;
-  background: linear-gradient(135deg, #126e69 0%, #6dd6d1 100%);
+  background: #01579b;
+  background: linear-gradient(135deg, #01579b 0%, #fcd734 100%);
 `;
 
 const StyledAuthCard = styled.div`

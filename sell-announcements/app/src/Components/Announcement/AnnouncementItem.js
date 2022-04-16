@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import noImage from 'assets/noImage.png';
 import { useHistory } from 'react-router-dom';
 
 const Card = styled.div`
@@ -38,22 +37,11 @@ const StyledLocation = styled.div`
   font-size: 15px;
 `;
 
-const StyledPrice = styled.div`
+const StyledQuantity = styled.div`
   font-size: 15px;
   font-weight: bold;
   margin-left: auto;
   margin-top: 10px;
-`;
-
-const Img = styled.li`
-  list-style: none;
-  width: 130px;
-  height: 130px;
-  background-color: #e3e3e3;
-  background-image: url(${({ background }) => (background ? `data:image/png;base64,${background}` : noImage)});
-  background-repeat: no-repeat;
-  background-size: 130px 130px;
-  border-radius: 4px;
 `;
 
 const AnnouncementItem = ({ data }) => {
@@ -66,12 +54,11 @@ const AnnouncementItem = ({ data }) => {
       }}
     >
       <Wrapper>
-        {data.image ? <Img background={btoa(String.fromCharCode.apply(null, new Uint8Array(data.image)))} /> : <Img />}
         <TextWrapper>
           <StyledName>{data.name}</StyledName>
           <StyledLocation>location: {data.location}</StyledLocation>
         </TextWrapper>
-        <StyledPrice>price: {data.price} $</StyledPrice>
+        <StyledQuantity>quantity: {data.quantity}</StyledQuantity>
       </Wrapper>
     </Card>
   );

@@ -1,8 +1,8 @@
 import React from 'react';
 import RootTemplate from 'templates/RootTemplate';
-import CategoryList from 'components/Category/CategoryList';
-import CreateAdminAndDb from 'components/Admin/CreateAdminAndDb';
-import Chart from 'components/Chart/Chart';
+import CategoryList from 'Components/Category/CategoryList';
+import CreateAdminAndDb from 'Components/Admin/CreateAdminAndDb';
+import Chart from 'Components/Chart/Chart';
 
 const AdminPage = () => {
   return (

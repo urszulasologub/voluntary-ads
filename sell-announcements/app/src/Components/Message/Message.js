@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import MessageInput from 'components/Message/MessageInput';
+import MessageInput from 'Components/Message/MessageInput';
 import { REMOTE_HOST } from 'config';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 
 const Message = ({ id, addId, owner }) => {
   const [state] = useContext(Context);

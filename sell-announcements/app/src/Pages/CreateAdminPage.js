@@ -8,7 +8,7 @@ import AuthTemplate from 'templates/AuthTemplate';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { REMOTE_HOST } from 'config';
-import { Context } from 'components/data/Store';
+import { Context } from 'Components/data/Store';
 import Button from '@material-ui/core/Button';
 
 const CreateAdminPage = () => {

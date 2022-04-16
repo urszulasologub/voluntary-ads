@@ -5,15 +5,13 @@ import com.example.announcements.models.*;
 import com.example.announcements.repository.*;
 import com.example.announcements.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @RestController
@@ -40,15 +38,15 @@ public class RestAdminPanelController {
 
     @RequestMapping(value = { "admin/statistics"}, method = RequestMethod.GET)
     public Map<LocalDate, Integer> getStatisticsFromThisWeek() {
-		Map<LocalDate, Integer> result = new TreeMap<>();
-		LocalDate today = LocalDate.now();
-		LocalDate weekAgo = LocalDate.now().minusDays(6);
-		for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
-			result.put(date, 0);
-		}
-		for (Announcement ann : announcementRepository.findAll()) {
-			for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
-			    try {
+        Map<LocalDate, Integer> result = new TreeMap<>();
+        LocalDate today = LocalDate.now();
+        LocalDate weekAgo = LocalDate.now().minusDays(6);
+        for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
+            result.put(date, 0);
+        }
+        for (Announcement ann : announcementRepository.findAll()) {
+            for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
+                try {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(ann.getDatetime());
                     LocalDate announcementDate = LocalDate.of(cal.get(Calendar.YEAR),
@@ -58,10 +56,10 @@ public class RestAdminPanelController {
                         result.put(date, result.get(date) + 1);
                     }
                 } catch (Exception e) {
-			        e.printStackTrace();
+                    e.printStackTrace();
                 }
-			}
-		}
+            }
+        }
         return result;
     }
 
@@ -86,75 +84,75 @@ public class RestAdminPanelController {
             user.setEmail("user@example.com");
             user.setPassword("user123");
             userService.saveUser(user);
-            Category phonesCategory = new Category();
-            phonesCategory.setName("Phones");
-            categoryRepository.save(phonesCategory);
-            Category laptopsCategory = new Category();
-            laptopsCategory.setName("Laptops");
-            categoryRepository.save(laptopsCategory);
+            Category transportCategory = new Category();
+            transportCategory.setName("Transport");
+            categoryRepository.save(transportCategory);
+            Category dwellingCategory = new Category();
+            dwellingCategory.setName("Dwelling");
+            categoryRepository.save(dwellingCategory);
 
-            Announcement iPhoneAnnouncement = new Announcement();
-            iPhoneAnnouncement.setCategory_id(phonesCategory);
-            iPhoneAnnouncement.setName("Apple iPhone XS");
-            iPhoneAnnouncement.setUser_id(admin);
-            iPhoneAnnouncement.setLocation("Lodz");
-            iPhoneAnnouncement.setPhone_number("123456789");
-            iPhoneAnnouncement.setPrice((float) 650.0);
-            iPhoneAnnouncement.setDescription("The good The iPhone XS has a markedly improved dual camera, delivering better photos than the iPhone X in both dark and high-contrast environments. It has a faster processor, faster face ID. 512GB");
-            iPhoneAnnouncement.setIs_hidden(false);
-            iPhoneAnnouncement.setDatetime(new Date());
-            announcementRepository.save(iPhoneAnnouncement);
+            Announcement busTransportAnnouncement = new Announcement();
+            busTransportAnnouncement.setCategory_id(transportCategory);
+            busTransportAnnouncement.setName("Bus Transport");
+            busTransportAnnouncement.setUser_id(admin);
+            busTransportAnnouncement.setLocation("Korczowa");
+            busTransportAnnouncement.setPhone_number("123456789");
+            busTransportAnnouncement.setQuantity((float) 30);
+            busTransportAnnouncement.setDescription("I own a bus, I offer transport from Korczowa border area to Warsaw and any city en-route");
+            busTransportAnnouncement.setIs_hidden(false);
+            busTransportAnnouncement.setDatetime(new Date());
+            announcementRepository.save(busTransportAnnouncement);
 
-            Announcement iPhoneAnnouncement2 = new Announcement();
-            iPhoneAnnouncement2.setCategory_id(phonesCategory);
-            iPhoneAnnouncement2.setName("APPLE iPhone 7 CHEAP");
-            iPhoneAnnouncement2.setUser_id(user);
-            iPhoneAnnouncement2.setLocation("Warsaw");
-            iPhoneAnnouncement2.setPhone_number("123000789");
-            iPhoneAnnouncement2.setPrice((float) 200.0);
-            iPhoneAnnouncement2.setDescription("Very good price for a very good phone!");
-            iPhoneAnnouncement2.setIs_hidden(false);
-            iPhoneAnnouncement2.setDatetime(new Date());
-            announcementRepository.save(iPhoneAnnouncement2);
+            Announcement packageTransportAnnouncement = new Announcement();
+            packageTransportAnnouncement.setCategory_id(transportCategory);
+            packageTransportAnnouncement.setName("Package transport");
+            packageTransportAnnouncement.setUser_id(user);
+            packageTransportAnnouncement.setLocation("Warsaw");
+            packageTransportAnnouncement.setPhone_number("123000789");
+            packageTransportAnnouncement.setQuantity((float) 28);
+            packageTransportAnnouncement.setDescription("I can transport any package smaller than 1m each dimension to any of: Kiev, Lviv, Odessa");
+            packageTransportAnnouncement.setIs_hidden(false);
+            packageTransportAnnouncement.setDatetime(new Date());
+            announcementRepository.save(packageTransportAnnouncement);
 
-            Announcement macbookAnnouncement = new Announcement();
-            macbookAnnouncement.setCategory_id(laptopsCategory);
-            macbookAnnouncement.setName("Macbook Air 2020 512GB");
-            macbookAnnouncement.setUser_id(admin);
-            macbookAnnouncement.setLocation("Lodz");
-            macbookAnnouncement.setPhone_number("123456789");
-            macbookAnnouncement.setPrice((float) 2000.0);
-            macbookAnnouncement.setDescription("Newest Macbook Air. 512GB of storage, i5 processor, 13\" with new Magic Keyboard. Almost new, only 90 battery cycles");
-            macbookAnnouncement.setIs_hidden(false);
-            macbookAnnouncement.setDatetime(new Date());
-            announcementRepository.save(macbookAnnouncement);
+            Announcement hrubieszowAnnouncement = new Announcement();
+            hrubieszowAnnouncement.setCategory_id(dwellingCategory);
+            hrubieszowAnnouncement.setName("Free rooms");
+            hrubieszowAnnouncement.setUser_id(admin);
+            hrubieszowAnnouncement.setLocation("Hrubieszów");
+            hrubieszowAnnouncement.setPhone_number("123456789");
+            hrubieszowAnnouncement.setQuantity((float) 1);
+            hrubieszowAnnouncement.setDescription("I have 4 people worth of space, near Hrubieszów. Message for details.");
+            hrubieszowAnnouncement.setIs_hidden(false);
+            hrubieszowAnnouncement.setDatetime(new Date());
+            announcementRepository.save(hrubieszowAnnouncement);
 
-            Announcement laptopAnnouncement = new Announcement();
-            laptopAnnouncement.setCategory_id(laptopsCategory);
-            laptopAnnouncement.setName("Gaming notebook MSI");
-            laptopAnnouncement.setUser_id(user);
-            laptopAnnouncement.setLocation("Warsaw");
-            laptopAnnouncement.setPhone_number("123000789");
-            laptopAnnouncement.setPrice((float) 700.0);
-            laptopAnnouncement.setDescription("Bought this laptop one year ago, still works great. 8GB RAM, 500GB SSD, i5 processor. Battery lasts for like 3 hours under big usage");
-            laptopAnnouncement.setIs_hidden(false);
-            laptopAnnouncement.setDatetime(new Date());
-            announcementRepository.save(laptopAnnouncement);
+            Announcement zamoscAnnouncement = new Announcement();
+            zamoscAnnouncement.setCategory_id(dwellingCategory);
+            zamoscAnnouncement.setName("House for rent CHEAP");
+            zamoscAnnouncement.setUser_id(user);
+            zamoscAnnouncement.setLocation("50.71157202495769, 23.28084820760046");
+            zamoscAnnouncement.setPhone_number("123000789");
+            zamoscAnnouncement.setQuantity((float) 100);
+            zamoscAnnouncement.setDescription("I have a free house in Zamość, i can rent for very cheap, the house is big enough for three families.");
+            zamoscAnnouncement.setIs_hidden(false);
+            zamoscAnnouncement.setDatetime(new Date());
+            announcementRepository.save(zamoscAnnouncement);
 
             PrivateMessage message1 = new PrivateMessage();
             message1.setBuyer(user);
-            message1.setSeller(iPhoneAnnouncement.getUser_id() == user);
+            message1.setSeller(busTransportAnnouncement.getUser_id() == user);
             message1.setDatetime(new Date());
-            message1.setMessage("Hello I am interested in buying this product");
-            message1.setAnnouncement_id(iPhoneAnnouncement);
+            message1.setMessage("I'd like to request 3 spots");
+            message1.setAnnouncement_id(busTransportAnnouncement);
             privateMessageRepository.save(message1);
 
             PrivateMessage message2 = new PrivateMessage();
             message2.setBuyer(user);
-            message2.setSeller(iPhoneAnnouncement2.getUser_id() == user);
+            message2.setSeller(packageTransportAnnouncement.getUser_id() == user);
             message2.setDatetime(new Date());
-            message2.setMessage("Hi, I would like to buy this iPhone");
-            message2.setAnnouncement_id(iPhoneAnnouncement2);
+            message2.setMessage("I have a package that's 1.05m long, can i still commission you?");
+            message2.setAnnouncement_id(packageTransportAnnouncement);
             privateMessageRepository.save(message2);
 
         } catch (Exception e) {
@@ -253,9 +251,13 @@ public class RestAdminPanelController {
     @RequestMapping(value = {"/admin_category/delete/{category_id}"}, method = RequestMethod.DELETE)
     public Map<String, String> deleteCategory(@PathVariable("category_id") Integer category_id) {
         Map<String, String> result = new HashMap<>();
-        Optional <Category> category = categoryRepository.findById(category_id);
+        Optional<Category> category = categoryRepository.findById(category_id);
         if (category.isPresent()) {
-            categoryRepository.delete(category.get());
+            try {
+                categoryRepository.delete(category.get());
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+            }
             result.put("result", "success");
         } else {
             result.put("result", "failure");
