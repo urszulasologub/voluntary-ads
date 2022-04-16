@@ -193,7 +193,7 @@ public class RestAdminPanelController {
             userToDelete.get().setRoles(Collections.emptySet());
             userRepository.save(userToDelete.get());
             userRepository.delete(userToDelete.get());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -220,11 +220,12 @@ public class RestAdminPanelController {
     public Map<String, String> deleteAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
         Map<String, String> result = new HashMap<>();
-        if (announcement.isPresent()) {
+        try {
             announcementRepository.delete(announcement.get());
             result.put("result", "success");
-        } else {
+        } catch (Exception e) {
             result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         }
         return result;
     }
@@ -244,15 +245,12 @@ public class RestAdminPanelController {
     public Map<String, String> deleteCategory(@PathVariable("category_id") Integer category_id) {
         Map<String, String> result = new HashMap<>();
         Optional<Category> category = categoryRepository.findById(category_id);
-        if (category.isPresent()) {
-            try {
-                categoryRepository.delete(category.get());
-            } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
-            }
+        try {
+            categoryRepository.delete(category.get());
             result.put("result", "success");
-        } else {
+        } catch (Exception e) {
             result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         }
         return result;
     }
