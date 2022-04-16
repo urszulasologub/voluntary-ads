@@ -48,7 +48,7 @@ const AboutPage = () => {
         <Description>
          <h3>About</h3>
          During those tough times our responsibility is to spread good will among those who need it most. <br/>
-         Our mission is to create a space where people can share their love and possibilities to help with others,
+         Our mission is to create a space where people can share their love and possibilities to help others,
          especially our friends from Ukraine, whose families are now suffering the enormous pain
         </Description>
         <MainButton href="/announcements">Browse</MainButton>
