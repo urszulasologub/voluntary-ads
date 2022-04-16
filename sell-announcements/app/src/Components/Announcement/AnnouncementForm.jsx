@@ -44,10 +44,11 @@ const AnnouncementForm = () => {
       .string()
       .max(50)
       .required()
-      .label('Announcement Name'),
+      .label('Title'),
     quantity: yup
       .number()
       .required()
+      .min(1)
       .label('Quantity'),
     description: yup
       .string()
@@ -102,21 +103,20 @@ const AnnouncementForm = () => {
       <TextField
         name="name"
         inputRef={register}
-        label="Announcement Name"
+        label="Title"
         type="text"
         fullWidth
-        error={errors.name ? true : false}
+        error={!!errors.name}
         helperText={errors.name ? errors.name.message : ''}
       />
       {category && selectCategory.value ? (
         <TextField
           id="standard-select-category"
           select
-          label="Select Category"
+          label="Category"
           value={selectCategory.value}
           onChange={handleChange}
           fullWidth
-          helperText="Please select category"
         >
           {category.map(option => (
             <MenuItem key={option.value} value={option.value}>
@@ -131,8 +131,8 @@ const AnnouncementForm = () => {
         label="Quantity"
         type="number"
         fullWidth
-        inputProps={{ min: '0', step: '0.01' }}
-        error={errors.quantity ? true : false}
+        inputProps={{ min: '1', step: '1' }}
+        error={!!errors.quantity}
         helperText={errors.quantity ? errors.quantity.message : ''}
       />
       <TextField
@@ -141,8 +141,9 @@ const AnnouncementForm = () => {
         label="Description"
         type="text"
         multiline
+        rows={3}
         fullWidth
-        error={errors.description ? true : false}
+        error={!!errors.description}
         helperText={errors.description ? errors.description.message : ''}
       />
       <TextField
@@ -151,7 +152,7 @@ const AnnouncementForm = () => {
         label="Phone Number"
         type="text"
         fullWidth
-        error={errors.phoneNumber ? true : false}
+        error={!!errors.phoneNumber}
         helperText={errors.phoneNumber ? errors.phoneNumber.message : ''}
       />
       <TextField
@@ -160,11 +161,11 @@ const AnnouncementForm = () => {
         label="Location"
         type="text"
         fullWidth
-        error={errors.location ? true : false}
+        error={!!errors.location}
         helperText={errors.location ? errors.location.message : ''}
       />
       <Button variant="contained" type="submit">
-        Create Announcement
+        Create
       </Button>
     </StyledForm>
   );
@@ -184,6 +185,7 @@ const StyledForm = styled.form`
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 80%;
+  width: 60%;
   margin: auto;
+  padding: 15px;
 `;

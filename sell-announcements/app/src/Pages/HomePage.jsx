@@ -8,7 +8,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import Grid from '@mui/material/Grid';
 
 const HomePage = () => {
   const [data, setData] = useState(null);
