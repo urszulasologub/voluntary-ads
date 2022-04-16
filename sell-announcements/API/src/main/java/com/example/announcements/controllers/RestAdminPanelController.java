@@ -241,7 +241,7 @@ public class RestAdminPanelController {
         Optional<Category> category = categoryRepository.findById(category_id);
         if (categoryRepository.count() == 1) {
             result.put("result", "failure");
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         try {
             categoryRepository.delete(category.get());
