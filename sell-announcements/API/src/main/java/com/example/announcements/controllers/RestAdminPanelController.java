@@ -155,12 +155,10 @@ public class RestAdminPanelController {
         return result;
     }
 
-
     @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.GET)
     public List<User> adminUserList() {
         return userRepository.findAll();
     }
-
 
     @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.POST)
     public User saveUser(@RequestBody User inputUser) {
@@ -173,7 +171,6 @@ public class RestAdminPanelController {
         return userService.saveUser(inputUser);
     }
 
-
     @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.PUT)
     public User editUser(@RequestBody User inputUser) {
         User user = userService.getLoggedInUser();
@@ -181,7 +178,6 @@ public class RestAdminPanelController {
             throw new RuntimeException("Not logged in");
         return userService.saveUser(inputUser);
     }
-
 
     @RequestMapping(value = { "/admin_auth/{id}" }, method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
@@ -204,7 +200,6 @@ public class RestAdminPanelController {
         return announcementRepository.findAll();
     }
 
-
     @RequestMapping(value = { "/admin_announcement/hide/{announcement_id}" }, method = RequestMethod.PUT)
     public Announcement hideAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
@@ -214,7 +209,6 @@ public class RestAdminPanelController {
         }
         return null;
     }
-
 
     @RequestMapping(value = { "/admin_announcement/delete/{announcement_id}" }, method = RequestMethod.DELETE)
     public Map<String, String> deleteAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
@@ -245,6 +239,10 @@ public class RestAdminPanelController {
     public Map<String, String> deleteCategory(@PathVariable("category_id") Integer category_id) {
         Map<String, String> result = new HashMap<>();
         Optional<Category> category = categoryRepository.findById(category_id);
+        if (categoryRepository.count() == 1) {
+            result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+        }
         try {
             categoryRepository.delete(category.get());
             result.put("result", "success");
