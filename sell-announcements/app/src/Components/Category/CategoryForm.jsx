@@ -19,7 +19,7 @@ const CategoryForm = ({ categoryList, setCategoryList }) => {
       .string()
       .max(50)
       .required()
-      .label('Category Name'),
+      .label('New Category Name'),
   });
 
   const { register, handleSubmit, errors, setError } = useForm({
@@ -55,7 +55,7 @@ const CategoryForm = ({ categoryList, setCategoryList }) => {
         label="Category Name"
         type="text"
         fullWidth
-        error={errors.name ? true : false}
+        error={!!errors.name}
         helperText={errors.name ? errors.name.message : ''}
       />
       <Button variant="contained" type="submit">
@@ -80,4 +80,6 @@ const StyledForm = styled.form`
   align-items: center;
   flex-direction: row;
   margin: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
