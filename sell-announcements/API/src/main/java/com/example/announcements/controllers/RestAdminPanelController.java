@@ -16,8 +16,6 @@ import java.util.*;
 
 @RestController
 public class RestAdminPanelController {
-
-
     @Autowired
     UserRepository userRepository;
 
@@ -76,14 +74,8 @@ public class RestAdminPanelController {
             categoryRepository.flush();
             userRepository.deleteAll();
             userRepository.flush();
-            User admin = new User();
-            admin.setEmail("admin@example.com");
-            admin.setPassword("admin123");
-            userService.saveAdminUser(admin);
-            User user = new User();
-            user.setEmail("user@example.com");
-            user.setPassword("user123");
-            userService.saveUser(user);
+            User admin = userService.seedUser("admin@example.com", "admin123", true);
+            User user = userService.seedUser("user@example.com", "admin123", false);
             Category transportCategory = new Category();
             transportCategory.setName("Transport");
             categoryRepository.save(transportCategory);
@@ -163,12 +155,10 @@ public class RestAdminPanelController {
         return result;
     }
 
-
     @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.GET)
     public List<User> adminUserList() {
         return userRepository.findAll();
     }
-
 
     @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.POST)
     public User saveUser(@RequestBody User inputUser) {
@@ -181,7 +171,6 @@ public class RestAdminPanelController {
         return userService.saveUser(inputUser);
     }
 
-
     @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.PUT)
     public User editUser(@RequestBody User inputUser) {
         User user = userService.getLoggedInUser();
@@ -189,7 +178,6 @@ public class RestAdminPanelController {
             throw new RuntimeException("Not logged in");
         return userService.saveUser(inputUser);
     }
-
 
     @RequestMapping(value = { "/admin_auth/{id}" }, method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
@@ -201,7 +189,7 @@ public class RestAdminPanelController {
             userToDelete.get().setRoles(Collections.emptySet());
             userRepository.save(userToDelete.get());
             userRepository.delete(userToDelete.get());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -211,7 +199,6 @@ public class RestAdminPanelController {
     public List<Announcement> adminAnnouncementList() {
         return announcementRepository.findAll();
     }
-
 
     @RequestMapping(value = { "/admin_announcement/hide/{announcement_id}" }, method = RequestMethod.PUT)
     public Announcement hideAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
@@ -223,16 +210,16 @@ public class RestAdminPanelController {
         return null;
     }
 
-
     @RequestMapping(value = { "/admin_announcement/delete/{announcement_id}" }, method = RequestMethod.DELETE)
     public Map<String, String> deleteAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
         Map<String, String> result = new HashMap<>();
-        if (announcement.isPresent()) {
+        try {
             announcementRepository.delete(announcement.get());
             result.put("result", "success");
-        } else {
+        } catch (Exception e) {
             result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         }
         return result;
     }
@@ -252,15 +239,16 @@ public class RestAdminPanelController {
     public Map<String, String> deleteCategory(@PathVariable("category_id") Integer category_id) {
         Map<String, String> result = new HashMap<>();
         Optional<Category> category = categoryRepository.findById(category_id);
-        if (category.isPresent()) {
-            try {
-                categoryRepository.delete(category.get());
-            } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
-            }
-            result.put("result", "success");
-        } else {
+        if (categoryRepository.count() == 1) {
             result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        try {
+            categoryRepository.delete(category.get());
+            result.put("result", "success");
+        } catch (Exception e) {
+            result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         }
         return result;
     }
