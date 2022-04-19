@@ -47,7 +47,7 @@ const PinnedSubheaderList = () => {
         setData(e.data);
       })
       .catch(() => {
-        setError('Category not exist');
+        setError('Category does not exist');
       })
       .then(() => {
         setLoading(false);
@@ -56,7 +56,7 @@ const PinnedSubheaderList = () => {
 
   return (
     <Wrapper>
-      <h4>Category: </h4>
+      <h4>Manage Categories</h4>
       {error ? <Alert severity="error">{error}</Alert> : null}
       {loading ? <StyledCircularProgress /> : null}
       <CategoryForm categoryList={data} setCategoryList={setData} />
@@ -85,6 +85,8 @@ const StyledCircularProgress = styled(CircularProgress)`
 const Wrapper = styled.div`
   width: 60%;
   margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
 
 const ListWrapper = styled.div`

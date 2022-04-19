@@ -32,11 +32,8 @@ const CreateAdminAndDb = () => {
 
   return (
     <Wrapper>
-      <Button variant="contained" onClick={() => onCreateAdmin()}>
-        Create Admin
-      </Button>
       <Button variant="contained" onClick={() => OnSampleDatabase()}>
-        Sample database
+        Seed Sample Database
       </Button>
     </Wrapper>
   );
@@ -50,4 +47,5 @@ const Wrapper = styled.div`
   flex-direction: row;
   margin: 20px auto;
   width: 60%;
+  padding-bottom: 20px;
 `;

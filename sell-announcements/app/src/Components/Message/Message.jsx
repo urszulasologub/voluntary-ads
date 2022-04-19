@@ -59,6 +59,7 @@ const MessageWrapperText = styled.div`
   word-wrap: break-word;
   font-size: 18px;
   max-width: fit content;
+  padding: 5px;
 `;
 
 const Card = styled.div`

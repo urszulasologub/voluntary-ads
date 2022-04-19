@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import Grid from '@mui/material/Grid';
 import { useHistory } from 'react-router-dom';
 
 const Card = styled.div`
@@ -7,7 +9,8 @@ const Card = styled.div`
   border-radius: 5px;
   box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.4);
   margin: 10px auto;
-  width: 90%;
+  padding: 10px;
+  width: 70%;
 `;
 
 const Wrapper = styled.div`
@@ -32,8 +35,12 @@ const StyledName = styled.div`
   font-weight: bold;
 `;
 
-const StyledLocation = styled.div`
-  margin-top: auto;
+const StyledAddOutlinedIcon = styled(AddCircleOutlineRoundedIcon)`
+  margin: 5px;
+`;
+
+const StyledDataDescription = styled.div`
+  margin-top: 10px;
   font-size: 15px;
 `;
 
@@ -54,10 +61,14 @@ const AnnouncementItem = ({ data }) => {
       }}
     >
       <Wrapper>
-        <TextWrapper>
-          <StyledName>{data.name}</StyledName>
-          <StyledLocation>location: {data.location}</StyledLocation>
-        </TextWrapper>
+        <Grid item xs={6} md={4}>
+          <StyledAddOutlinedIcon/><br/>
+          <TextWrapper>
+            <StyledName>{data.name}</StyledName>
+            <StyledDataDescription>location: {data.location}</StyledDataDescription>
+            <StyledDataDescription>{`${data.description.substring(0, 300)}...`}</StyledDataDescription>
+          </TextWrapper>
+        </Grid>
         <StyledQuantity>quantity: {data.quantity}</StyledQuantity>
       </Wrapper>
     </Card>
