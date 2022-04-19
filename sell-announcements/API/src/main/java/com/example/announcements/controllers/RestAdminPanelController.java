@@ -3,6 +3,7 @@ package com.example.announcements.controllers;
 
 import com.example.announcements.models.*;
 import com.example.announcements.repository.*;
+import com.example.announcements.service.AnnouncementService;
 import com.example.announcements.service.CategoryService;
 import com.example.announcements.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class RestAdminPanelController {
 
     @Autowired
     AnnouncementRepository announcementRepository;
+
+    @Autowired
+    AnnouncementService announcementService;
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -85,54 +89,26 @@ public class RestAdminPanelController {
             Category transportCategory = categoryService.seedCategory("Transport");
             Category dwellingCategory =  categoryService.seedCategory("Dwelling");
 
+            Announcement busTransportAnnouncement = announcementService.seedAnnouncement(transportCategory,
+                    "Bus Transport", admin, "Korczowa", "123456789", (float) 30,
+                    "I own a bus, I offer transport from Korczowa border area to Warsaw and any city en-route",
+                    false, new Date());
 
-            Announcement busTransportAnnouncement = new Announcement();
-            busTransportAnnouncement.setCategory_id(transportCategory);
-            busTransportAnnouncement.setName("Bus Transport");
-            busTransportAnnouncement.setUser_id(admin);
-            busTransportAnnouncement.setLocation("Korczowa");
-            busTransportAnnouncement.setPhone_number("123456789");
-            busTransportAnnouncement.setQuantity((float) 30);
-            busTransportAnnouncement.setDescription("I own a bus, I offer transport from Korczowa border area to Warsaw and any city en-route");
-            busTransportAnnouncement.setIs_hidden(false);
-            busTransportAnnouncement.setDatetime(new Date());
-            announcementRepository.save(busTransportAnnouncement);
+            Announcement packageTransportAnnouncement = announcementService.seedAnnouncement(transportCategory,
+                    "Package transport", user, "Warsaw", "123000789", (float) 20,
+                    "I can transport any package smaller than 1m each dimension to any of: Kiev, Lviv, Odessa",
+                    false, new Date());
 
-            Announcement packageTransportAnnouncement = new Announcement();
-            packageTransportAnnouncement.setCategory_id(transportCategory);
-            packageTransportAnnouncement.setName("Package transport");
-            packageTransportAnnouncement.setUser_id(user);
-            packageTransportAnnouncement.setLocation("Warsaw");
-            packageTransportAnnouncement.setPhone_number("123000789");
-            packageTransportAnnouncement.setQuantity((float) 28);
-            packageTransportAnnouncement.setDescription("I can transport any package smaller than 1m each dimension to any of: Kiev, Lviv, Odessa");
-            packageTransportAnnouncement.setIs_hidden(false);
-            packageTransportAnnouncement.setDatetime(new Date());
-            announcementRepository.save(packageTransportAnnouncement);
+            Announcement hrubieszowAnnouncement = announcementService.seedAnnouncement(dwellingCategory,
+                    "Free rooms", admin, "Hrubieszów", "123456789", (float) 1,
+                    "I have 4 people worth of space, near Hrubieszów. Message for details.",
+                    false, new Date());
 
-            Announcement hrubieszowAnnouncement = new Announcement();
-            hrubieszowAnnouncement.setCategory_id(dwellingCategory);
-            hrubieszowAnnouncement.setName("Free rooms");
-            hrubieszowAnnouncement.setUser_id(admin);
-            hrubieszowAnnouncement.setLocation("Hrubieszów");
-            hrubieszowAnnouncement.setPhone_number("123456789");
-            hrubieszowAnnouncement.setQuantity((float) 1);
-            hrubieszowAnnouncement.setDescription("I have 4 people worth of space, near Hrubieszów. Message for details.");
-            hrubieszowAnnouncement.setIs_hidden(false);
-            hrubieszowAnnouncement.setDatetime(new Date());
-            announcementRepository.save(hrubieszowAnnouncement);
+            Announcement zamoscAnnouncement = announcementService.seedAnnouncement(dwellingCategory,
+                    "House for rent CHEAP", user, "50.71157202495769, 23.28084820760046", "123000789",
+                    (float) 100,"I have a free house in Zamość, i can rent for very cheap, the house is big" +
+                            " enough for three families.",false, new Date());
 
-            Announcement zamoscAnnouncement = new Announcement();
-            zamoscAnnouncement.setCategory_id(dwellingCategory);
-            zamoscAnnouncement.setName("House for rent CHEAP");
-            zamoscAnnouncement.setUser_id(user);
-            zamoscAnnouncement.setLocation("50.71157202495769, 23.28084820760046");
-            zamoscAnnouncement.setPhone_number("123000789");
-            zamoscAnnouncement.setQuantity((float) 100);
-            zamoscAnnouncement.setDescription("I have a free house in Zamość, i can rent for very cheap, the house is big enough for three families.");
-            zamoscAnnouncement.setIs_hidden(false);
-            zamoscAnnouncement.setDatetime(new Date());
-            announcementRepository.save(zamoscAnnouncement);
 
             PrivateMessage message1 = new PrivateMessage();
             message1.setBuyer(user);
