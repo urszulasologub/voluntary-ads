@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -55,5 +56,21 @@ public class PrivateMessageServiceImp implements PrivateMessageService {
 			users.add(message.getBuyer());
 		}
 		return users;
+	}
+
+	@Override
+	public PrivateMessage seedPrivateMessage(User buyer, Boolean is_seller, Date date, String message, Announcement announcement) {
+		PrivateMessage privateMessage = new PrivateMessage();
+		privateMessage.setBuyer(buyer);
+		privateMessage.setSeller(is_seller);
+		privateMessage.setDatetime(date);
+		privateMessage.setMessage(message);
+		privateMessage.setAnnouncement_id(announcement);
+		return savePrivateMessage(privateMessage);
+	}
+
+	@Override
+	public PrivateMessage savePrivateMessage(PrivateMessage privateMessage) {
+		return privateMessageRepository.save(privateMessage);
 	}
 }
