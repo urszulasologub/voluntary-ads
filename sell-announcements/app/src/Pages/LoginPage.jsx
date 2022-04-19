@@ -1,102 +1,88 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import MaterialLink from '@material-ui/core/Link';
 import AuthTemplate from 'templates/AuthTemplate';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Succes from 'Components/atoms/Succes';
 import { REMOTE_HOST } from 'config';
+import { Context } from 'Components/data/Store';
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const classes = useStyles();
-  const [succes, setSucces] = useState(null);
+  const [, dispatch] = useContext(Context);
+  const history = useHistory();
 
-  let registerSchema = yup.object().shape({
+  const passwordMinLength = 5;
+  let loginSchema = yup.object().shape({
     email: yup
       .string()
-      .email()
-      .required(),
+      .required('E-mail is required'),
     password: yup
       .string()
-      .min(5)
-      .required(),
-    confirmPassword: yup
-      .string()
-      .label('Confirm password')
-      .test('passwords-match', 'Passwords must match', function(value) {
-        return this.parent.password === value;
-      }),
+      .min(passwordMinLength, `Password must be at least ${passwordMinLength} characters long`)
+      .required('Password is required'),
   });
 
   const { register, handleSubmit, errors, setError } = useForm({
-    validationSchema: registerSchema,
+    validationSchema: loginSchema,
   });
 
   const onSubmit = ({ email, password }) => {
     const options = {
       method: 'POST',
-      url: `${REMOTE_HOST}/register`,
+      url: `${REMOTE_HOST}/login`,
       data: { email: email, password: password },
     };
 
     axios(options)
-      .then(() => {
-        setError(null);
-        setSucces('Account has been created');
+      .then(d => {
+        dispatch({ type: 'LOGIN', payload: d.data });
+        history.push('/');
       })
       .catch(() => {
-        setError('email', 'email', 'email is already exist');
+        setError('email', 'email', 'Incorrect e-mail or password');
+        setError('password', 'password', 'Incorrect e-mail or password');
       });
   };
 
   return (
     <AuthTemplate>
-      <h1>sign up</h1>
-      {succes ? <Succes>{succes}</Succes> : null}
+      <h1>Log In</h1>
       <StyledForm className={classes.root} onSubmit={handleSubmit(onSubmit)}>
         <TextField
           name="email"
           inputRef={register}
-          label="email"
+          label="E-mail"
           fullWidth
-          error={errors.email ? true : false}
+          error={!!errors.email}
           helperText={errors.email ? errors.email.message : ''}
         />
         <TextField
           name="password"
           inputRef={register}
-          label="password"
+          label="Password"
           type="password"
           fullWidth
-          error={errors.password ? true : false}
+          error={!!errors.password}
           helperText={errors.password ? errors.password.message : ''}
         />
-        <TextField
-          name="confirmPassword"
-          inputRef={register}
-          label="confirm password"
-          type="password"
-          fullWidth
-          error={errors.confirmPassword ? true : false}
-          helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
-        />
         <StyledButton variant="contained" type="submit">
-          sign up
+          SIGN IN
         </StyledButton>
-        <StyledMaterialLink component={Link} to="/login">
-          Dou do not have an account?
+        <StyledMaterialLink component={Link} to="/register">
+          Register
         </StyledMaterialLink>
       </StyledForm>
     </AuthTemplate>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -115,6 +101,7 @@ const StyledForm = styled.form`
 `;
 
 const StyledButton = styled(Button)`
+  margin-top: 15px;
   width: 300px;
 `;
 
