@@ -25,9 +25,13 @@ const PinnedSubheaderList = () => {
       url: `${REMOTE_HOST}/admin_category/delete/${id}`,
     };
 
-    axios(options).then(e => {
-      setData(data.filter(el => el.id !== id));
-    });
+    axios(options)
+      .then((e) => {
+        setData(data.filter((el) => el.id !== id));
+      })
+      .catch((e) => {
+        window.alert('Cannot delete this category as it contains announcements or it is the only category.');
+      });
   };
 
   useEffect(() => {
