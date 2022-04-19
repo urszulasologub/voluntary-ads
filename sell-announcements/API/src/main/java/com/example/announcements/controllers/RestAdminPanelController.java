@@ -3,9 +3,7 @@ package com.example.announcements.controllers;
 
 import com.example.announcements.models.*;
 import com.example.announcements.repository.*;
-import com.example.announcements.service.AnnouncementService;
-import com.example.announcements.service.CategoryService;
-import com.example.announcements.service.UserService;
+import com.example.announcements.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
@@ -40,9 +38,12 @@ public class RestAdminPanelController {
     PrivateMessageRepository privateMessageRepository;
 
     @Autowired
+    PrivateMessageService privateMessageService;
+
+    @Autowired
     RoleRepository roleRepository;
 
-    @RequestMapping(value = { "admin/statistics"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"admin/statistics"}, method = RequestMethod.GET)
     public Map<LocalDate, Integer> getStatisticsFromThisWeek() {
         Map<LocalDate, Integer> result = new TreeMap<>();
         LocalDate today = LocalDate.now();
@@ -70,7 +71,7 @@ public class RestAdminPanelController {
     }
 
 
-    @RequestMapping(value = { "/admin/create_database"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/admin/create_database"}, method = RequestMethod.POST)
     public Map<String, String> createExampleDatabase() {
         Map<String, String> result = new HashMap<>();
         try {
@@ -82,12 +83,12 @@ public class RestAdminPanelController {
             categoryRepository.flush();
             userRepository.deleteAll();
             userRepository.flush();
+
             User admin = userService.seedUser("admin@example.com", "admin123", true);
             User user = userService.seedUser("user@example.com", "admin123", false);
 
-
             Category transportCategory = categoryService.seedCategory("Transport");
-            Category dwellingCategory =  categoryService.seedCategory("Dwelling");
+            Category dwellingCategory = categoryService.seedCategory("Dwelling");
 
             Announcement busTransportAnnouncement = announcementService.seedAnnouncement(transportCategory,
                     "Bus Transport", admin, "Korczowa", "123456789", (float) 30,
@@ -106,26 +107,18 @@ public class RestAdminPanelController {
 
             Announcement zamoscAnnouncement = announcementService.seedAnnouncement(dwellingCategory,
                     "House for rent CHEAP", user, "50.71157202495769, 23.28084820760046", "123000789",
-                    (float) 100,"I have a free house in Zamość, i can rent for very cheap, the house is big" +
-                            " enough for three families.",false, new Date());
+                    (float) 100, "I have a free house in Zamość, i can rent for very cheap, the house is big" +
+                            " enough for three families.", false, new Date());
 
 
-            PrivateMessage message1 = new PrivateMessage();
-            message1.setBuyer(user);
-            message1.setSeller(busTransportAnnouncement.getUser_id() == user);
-            message1.setDatetime(new Date());
-            message1.setMessage("I'd like to request 3 spots");
-            message1.setAnnouncement_id(busTransportAnnouncement);
-            privateMessageRepository.save(message1);
+            PrivateMessage message1 = privateMessageService.seedPrivateMessage(user,
+                    busTransportAnnouncement.getUser_id() == user, new Date(),
+                    "I'd like to request 3 spots", busTransportAnnouncement);
 
-            PrivateMessage message2 = new PrivateMessage();
-            message2.setBuyer(user);
-            message2.setSeller(packageTransportAnnouncement.getUser_id() == user);
-            message2.setDatetime(new Date());
-            message2.setMessage("I have a package that's 1.05m long, can i still commission you?");
-            message2.setAnnouncement_id(packageTransportAnnouncement);
-            privateMessageRepository.save(message2);
-
+            PrivateMessage message2 = privateMessageService.seedPrivateMessage(user,
+                    packageTransportAnnouncement.getUser_id() == user, new Date(),
+                    "I have a package that's 1.05m long, can i still commission you?",
+                    packageTransportAnnouncement);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't finish an operation");
@@ -134,12 +127,12 @@ public class RestAdminPanelController {
         return result;
     }
 
-    @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_auth"}, method = RequestMethod.GET)
     public List<User> adminUserList() {
         return userRepository.findAll();
     }
 
-    @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/admin_auth"}, method = RequestMethod.POST)
     public User saveUser(@RequestBody User inputUser) {
         User user = userService.getLoggedInUser();
         if (user == null)
@@ -150,7 +143,7 @@ public class RestAdminPanelController {
         return userService.saveUser(inputUser);
     }
 
-    @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/admin_auth"}, method = RequestMethod.PUT)
     public User editUser(@RequestBody User inputUser) {
         User user = userService.getLoggedInUser();
         if (user == null)
@@ -158,7 +151,7 @@ public class RestAdminPanelController {
         return userService.saveUser(inputUser);
     }
 
-    @RequestMapping(value = { "/admin_auth/{id}" }, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/admin_auth/{id}"}, method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         User user = userService.getLoggedInUser();
         if (user == null)
@@ -174,12 +167,12 @@ public class RestAdminPanelController {
         }
     }
 
-    @RequestMapping(value = { "/admin_announcement" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_announcement"}, method = RequestMethod.GET)
     public List<Announcement> adminAnnouncementList() {
         return announcementRepository.findAll();
     }
 
-    @RequestMapping(value = { "/admin_announcement/hide/{announcement_id}" }, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/admin_announcement/hide/{announcement_id}"}, method = RequestMethod.PUT)
     public Announcement hideAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
         if (announcement.isPresent()) {
@@ -189,7 +182,7 @@ public class RestAdminPanelController {
         return null;
     }
 
-    @RequestMapping(value = { "/admin_announcement/delete/{announcement_id}" }, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/admin_announcement/delete/{announcement_id}"}, method = RequestMethod.DELETE)
     public Map<String, String> deleteAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
         Map<String, String> result = new HashMap<>();
@@ -203,12 +196,12 @@ public class RestAdminPanelController {
         return result;
     }
 
-    @RequestMapping(value = { "/admin_category" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_category"}, method = RequestMethod.GET)
     public List<Category> adminCategoryList() {
         return categoryRepository.findAll();
     }
 
-    @RequestMapping(value = {"/admin_category/create"}, method=RequestMethod.POST)
+    @RequestMapping(value = {"/admin_category/create"}, method = RequestMethod.POST)
     public Category createCategory(@RequestBody Category new_category) {
         new_category.setId(null);
         return categoryRepository.save(new_category);
@@ -232,13 +225,13 @@ public class RestAdminPanelController {
         return result;
     }
 
-    @RequestMapping(value = { "/admin_priv" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_priv"}, method = RequestMethod.GET)
     public List<PrivateMessage> adminPrivList() {
         return privateMessageRepository.findAll();
     }
 
 
-    @RequestMapping(value="/create_admin", method=RequestMethod.POST)
+    @RequestMapping(value = "/create_admin", method = RequestMethod.POST)
     public User createAdmin(@RequestBody User user) {
         user.setId(null);
         user.setAnnouncements(null);
