@@ -3,6 +3,7 @@ package com.example.announcements.controllers;
 
 import com.example.announcements.models.*;
 import com.example.announcements.repository.*;
+import com.example.announcements.service.CategoryService;
 import com.example.announcements.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
@@ -27,6 +28,9 @@ public class RestAdminPanelController {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Autowired
     PrivateMessageRepository privateMessageRepository;
@@ -77,12 +81,10 @@ public class RestAdminPanelController {
             User admin = userService.seedUser("admin@example.com", "admin123", true);
             User user = userService.seedUser("user@example.com", "admin123", false);
 
-            Category transportCategory = new Category();
-            transportCategory.setName("Transport");
-            categoryRepository.save(transportCategory);
-            Category dwellingCategory = new Category();
-            dwellingCategory.setName("Dwelling");
-            categoryRepository.save(dwellingCategory);
+
+            Category transportCategory = categoryService.seedCategory("Transport");
+            Category dwellingCategory =  categoryService.seedCategory("Dwelling");
+
 
             Announcement busTransportAnnouncement = new Announcement();
             busTransportAnnouncement.setCategory_id(transportCategory);
