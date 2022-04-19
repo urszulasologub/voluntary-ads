@@ -7,10 +7,7 @@ import com.example.announcements.repository.AnnouncementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AnnouncementServiceImp implements AnnouncementService {
@@ -78,6 +75,28 @@ public class AnnouncementServiceImp implements AnnouncementService {
 		List<Announcement> announcements = announcementRepository.findByUserId(user_id);
 		Collections.sort(announcements);
 		return announcements;
+	}
+
+
+	//TODO too many arguments, maybe use Builder pattern?
+	@Override
+	public Announcement seedAnnouncement(Category category, String name, User user, String location, String phone_number, float quantity, String description, boolean isHidden, Date date) {
+		Announcement announcement = new Announcement();
+		announcement.setCategory_id(category);
+		announcement.setName(name);
+		announcement.setUser_id(user);
+		announcement.setLocation(location);
+		announcement.setPhone_number(phone_number);
+		announcement.setQuantity(quantity);
+		announcement.setDescription(description);
+		announcement.setIs_hidden(isHidden);
+		announcement.setDatetime(date);
+		return saveAnnouncement(announcement);
+	}
+
+	@Override
+	public Announcement saveAnnouncement(Announcement announcement) {
+		return announcementRepository.save(announcement);
 	}
 
 }
