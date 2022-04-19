@@ -3,9 +3,11 @@ package com.example.announcements.controllers;
 import com.example.announcements.dto.AnnouncementDto;
 import com.example.announcements.models.Announcement;
 import com.example.announcements.models.Category;
+import com.example.announcements.models.PrivateMessage;
 import com.example.announcements.models.User;
 import com.example.announcements.repository.AnnouncementRepository;
 import com.example.announcements.repository.CategoryRepository;
+import com.example.announcements.repository.PrivateMessageRepository;
 import com.example.announcements.repository.UserRepository;
 import com.example.announcements.service.AnnouncementService;
 import com.example.announcements.service.UserService;
@@ -33,6 +35,9 @@ public class RestAnnouncementsController {
 
 	@Autowired
 	AnnouncementService announcementService;
+
+	@Autowired
+	PrivateMessageRepository privateMessageRepository;
 
 
 	@RequestMapping(value = { "/announcements" }, method = RequestMethod.GET)
@@ -113,6 +118,8 @@ public class RestAnnouncementsController {
 				result.put("result", "failure");
 				return result;
 			}
+            List<PrivateMessage> messagesToDelete= privateMessageRepository.findByAnnouncementId(announcement.get());
+            privateMessageRepository.deleteAll(messagesToDelete);
 			announcementRepository.delete(announcement.get());
 			result.put("result", "success");
 		} else {
