@@ -26,10 +26,6 @@ const CreateAdminAndDb = () => {
     });
   };
 
-  const onCreateAdmin = () => {
-    history.push('create_admin');
-  };
-
   return (
     <Wrapper>
       <Button variant="contained" onClick={() => OnSampleDatabase()}>
