@@ -76,6 +76,7 @@ public class RestAdminPanelController {
             userRepository.flush();
             User admin = userService.seedUser("admin@example.com", "admin123", true);
             User user = userService.seedUser("user@example.com", "admin123", false);
+
             Category transportCategory = new Category();
             transportCategory.setName("Transport");
             categoryRepository.save(transportCategory);
