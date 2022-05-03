@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 const MessageInput = ({ addId, owner, id, setMessages }) => {
   const { register, handleSubmit } = useForm();
   const [state] = useContext(Context);
+  const [message, setMessage] = useState('');
 
   const onSubmit = ({ message }) => {
     const options = {
@@ -24,13 +25,22 @@ const MessageInput = ({ addId, owner, id, setMessages }) => {
 
     axios(options).then(el => {
       setMessages(oldArray => [...oldArray, el.data]);
+      setMessage('');
     });
   };
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <TextField name="message" inputRef={register} label="Message" fullWidth multiline />
-      <StyledButton variant="contained" type="submit">
+      <TextField
+        name="message"
+        inputRef={register}
+        label="Message"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        fullWidth
+        multiline
+      />
+      <StyledButton variant="contained" type="submit" disabled={message.length === 0}>
         Send
       </StyledButton>
     </StyledForm>

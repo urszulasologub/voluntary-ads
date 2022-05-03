@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
@@ -52,11 +51,13 @@ public class RestAuthenticationController {
 
             result.put("result", "success");
             result.put("session", jwtService.generateJwtToken(loggedInUser.getId(), new Date(System.currentTimeMillis() + 24*3600*1000)));
-            Boolean is_admin = false;
+            boolean is_admin = false;
             for (Role role : loggedInUser.getRoles())
-                if (role.getRole().toString().equals("ADMIN_USER"))
+                if (role.getRole().toString().equals("ADMIN_USER")) {
                     is_admin = true;
-            result.put("is_admin", is_admin.toString());
+                    break;
+                }
+            result.put("is_admin", Boolean.toString(is_admin));
             result.put("id", loggedInUser.getId().toString());
         } else {
             result.put("result", "failure");

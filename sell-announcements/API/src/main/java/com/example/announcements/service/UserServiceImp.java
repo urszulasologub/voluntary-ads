@@ -1,7 +1,9 @@
 package com.example.announcements.service;
 
+import com.example.announcements.models.Category;
 import com.example.announcements.models.Role;
 import com.example.announcements.models.User;
+import com.example.announcements.repository.CategoryRepository;
 import com.example.announcements.repository.RoleRepository;
 import com.example.announcements.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,33 +25,60 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 
 @Service
 public class UserServiceImp implements UserService {
-
 	@Autowired
 	PasswordEncoder encoder;
 	@Autowired
 	RoleRepository roleRepository;
 	@Autowired
 	UserRepository userRepository;
-
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	@PostConstruct
 	private void postConstruct() {
+		seedDefaultUserRoles();
+		seedDefaultUsers();
+		seedDefaultCategory();
+	}
+
+	private void seedDefaultUserRoles() {
 		if (roleRepository.count() == 0) {
 			Role admin = new Role();
 			admin.setRole("ADMIN_USER");
-			Role siteuser = new Role();
-			siteuser.setRole("SITE_USER");
+			Role siteUser = new Role();
+			siteUser.setRole("SITE_USER");
 			roleRepository.save(admin);
-			roleRepository.save(siteuser);
-		}
-		if (userRepository.count() == 0) {
-			User adminUser = new User();
-			adminUser.setEmail("admin@example.com");
-			adminUser.setPassword("admin123");
-			saveAdminUser(adminUser);
+			roleRepository.save(siteUser);
 		}
 	}
 
+	private void seedDefaultUsers() {
+		if (userRepository.count() == 0) {
+			seedUser("admin@example.com", "admin123", true);
+			seedUser("user@example.com", "admin123", false);
+		}
+	}
+
+	public User seedUser(String email, String password, boolean isAdmin) {
+		User user = new User();
+		user.setEmail(email);
+		user.setPassword(password);
+		if (isAdmin) {
+			saveAdminUser(user);
+		} else {
+			saveUser(user);
+		}
+		return user;
+	}
+
+	// This method is not really related to the user, but it is necessary for it to work
+	private void seedDefaultCategory() {
+		if (categoryRepository.count() == 0) {
+			Category category = new Category();
+			category.setName("Default Advertisement");
+			categoryRepository.save(category);
+		}
+	}
 
 	@Override
 	public User saveUser(User user) {
@@ -61,13 +90,10 @@ public class UserServiceImp implements UserService {
 		return userRepository.save(user);
 	}
 
-
 	@Override
 	public User saveAdminUser(User user) {
 		user.setPassword(encoder.encode(user.getPassword()));
-		Set<Role> roles = new HashSet<>();
-		for (Role role : roleRepository.findAll())
-			roles.add(role);
+		Set<Role> roles = new HashSet<>(roleRepository.findAll());
 		user.setRoles(roles);
 		user.setRoles(new HashSet<Role>(roles));
 		if (isUserAlreadyPresent(user))
@@ -75,25 +101,17 @@ public class UserServiceImp implements UserService {
 		return userRepository.save(user);
 	}
 
-
 	@Override
 	public boolean isUserAlreadyPresent(User user) {
 		Optional<User> existingUser = userRepository.findUserByEmail(user.getEmail());
-		if (existingUser.isPresent())
-			return true;
-		return false;
+		return existingUser.isPresent();
 	}
 
-	/**
-	 * Zwraca zalogowanego użytkownika lub null.
-	 *
-	 * @return obiekt zalogowanego użytkownika lub null
-	 */
 	@Override
 	public User getLoggedInUser() {
 		Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
 		if (currentAuthentication != null && currentAuthentication.isAuthenticated()) {
-			String username = null;
+			String username;
 			if (currentAuthentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
 				username = ((org.springframework.security.core.userdetails.User) currentAuthentication.getPrincipal()).getUsername();
 			} else {
@@ -101,7 +119,7 @@ public class UserServiceImp implements UserService {
 			}
 
 			Optional<User> userOptional = userRepository.findUserByEmail(username);
-			return userOptional.orElse(null); // jeśli znajdzie użytkownika - zwracamy go, a jak nie to null
+			return userOptional.orElse(null);
 		} else {
 			return null;
 		}

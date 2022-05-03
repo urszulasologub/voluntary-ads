@@ -72,7 +72,7 @@ const AnnouncementShowPage = value => {
         setData(e.data);
       })
       .catch(() => {
-        setError('Announcement not exist');
+        setError('Announcement does not exist');
       })
       .then(() => {
         setLoading(false);
@@ -111,9 +111,9 @@ const AnnouncementShowPage = value => {
             <Wrapper>
               <TitleWrapper>
                 <StyledName>{data.name}</StyledName>
-                <StyledQuantity>Quantity: {data.quantity}</StyledQuantity>
-                <StyledLocation>location: {data.location}</StyledLocation>
-                <StyledLocation>phone number: {data.phone_number}</StyledLocation>
+                <StyledData><b>Quantity:</b> {data.quantity}</StyledData>
+                <StyledData><b>Location:</b> {data.location}</StyledData>
+                <StyledData><b>Phone Number:</b> {data.phone_number}</StyledData>
               </TitleWrapper>
             </Wrapper>
             <StyledDescriptionTitle>Description:</StyledDescriptionTitle>
@@ -186,14 +186,7 @@ const Wrapper = styled.div`
   flex-direction: row;
 `;
 
-const StyledLocation = styled.div`
-  font-size: 15px;
-  font-weight: bold;
-  margin: 5px 0;
-`;
-
-const StyledQuantity = styled.div`
-  font-size: 20px;
-  font-weight: bold;
+const StyledData = styled.div`
+  font-size: medium;
   margin: 10px 0 0;
 `;

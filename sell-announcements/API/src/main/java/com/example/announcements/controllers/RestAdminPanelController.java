@@ -3,7 +3,7 @@ package com.example.announcements.controllers;
 
 import com.example.announcements.models.*;
 import com.example.announcements.repository.*;
-import com.example.announcements.service.UserService;
+import com.example.announcements.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,6 @@ import java.util.*;
 
 @RestController
 public class RestAdminPanelController {
-
-
     @Autowired
     UserRepository userRepository;
 
@@ -28,40 +26,19 @@ public class RestAdminPanelController {
     AnnouncementRepository announcementRepository;
 
     @Autowired
+    AnnouncementService announcementService;
+
+    @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Autowired
     PrivateMessageRepository privateMessageRepository;
 
     @Autowired
-    RoleRepository roleRepository;
-
-    @RequestMapping(value = { "admin/statistics"}, method = RequestMethod.GET)
-    public Map<LocalDate, Integer> getStatisticsFromThisWeek() {
-        Map<LocalDate, Integer> result = new TreeMap<>();
-        LocalDate today = LocalDate.now();
-        LocalDate weekAgo = LocalDate.now().minusDays(6);
-        for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
-            result.put(date, 0);
-        }
-        for (Announcement ann : announcementRepository.findAll()) {
-            for (LocalDate date = weekAgo; date.isBefore(today.plusDays(1)); date = date.plusDays(1)) {
-                try {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(ann.getDatetime());
-                    LocalDate announcementDate = LocalDate.of(cal.get(Calendar.YEAR),
-                            cal.get(Calendar.MONTH) + 1,
-                            cal.get(Calendar.DAY_OF_MONTH));
-                    if (announcementDate.compareTo(date) == 0) {
-                        result.put(date, result.get(date) + 1);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return result;
-    }
+    PrivateMessageService privateMessageService;
 
     @RequestMapping(value = {"/admin/create_database"}, method = RequestMethod.POST)
     public Map<String, String> createExampleDatabase() {
@@ -75,85 +52,42 @@ public class RestAdminPanelController {
             categoryRepository.flush();
             userRepository.deleteAll();
             userRepository.flush();
-            User admin = new User();
-            admin.setEmail("admin@example.com");
-            admin.setPassword("admin123");
-            userService.saveAdminUser(admin);
-            User user = new User();
-            user.setEmail("user@example.com");
-            user.setPassword("user123");
-            userService.saveUser(user);
-            Category transportCategory = new Category();
-            transportCategory.setName("Transport");
-            categoryRepository.save(transportCategory);
-            Category dwellingCategory = new Category();
-            dwellingCategory.setName("Dwelling");
-            categoryRepository.save(dwellingCategory);
 
-            Announcement busTransportAnnouncement = new Announcement();
-            busTransportAnnouncement.setCategory_id(transportCategory);
-            busTransportAnnouncement.setName("Bus Transport");
-            busTransportAnnouncement.setUser_id(admin);
-            busTransportAnnouncement.setLocation("Korczowa");
-            busTransportAnnouncement.setPhone_number("123456789");
-            busTransportAnnouncement.setQuantity((float) 30);
-            busTransportAnnouncement.setDescription("I own a bus, I offer transport from Korczowa border area to Warsaw and any city en-route");
-            busTransportAnnouncement.setIs_hidden(false);
-            busTransportAnnouncement.setDatetime(new Date());
-            announcementRepository.save(busTransportAnnouncement);
+            User admin = userService.seedUser("admin@example.com", "admin123", true);
+            User user = userService.seedUser("user@example.com", "admin123", false);
 
-            Announcement packageTransportAnnouncement = new Announcement();
-            packageTransportAnnouncement.setCategory_id(transportCategory);
-            packageTransportAnnouncement.setName("Package transport");
-            packageTransportAnnouncement.setUser_id(user);
-            packageTransportAnnouncement.setLocation("Warsaw");
-            packageTransportAnnouncement.setPhone_number("123000789");
-            packageTransportAnnouncement.setQuantity((float) 28);
-            packageTransportAnnouncement.setDescription("I can transport any package smaller than 1m each dimension to any of: Kiev, Lviv, Odessa");
-            packageTransportAnnouncement.setIs_hidden(false);
-            packageTransportAnnouncement.setDatetime(new Date());
-            announcementRepository.save(packageTransportAnnouncement);
+            Category transportCategory = categoryService.seedCategory("Transport");
+            Category dwellingCategory = categoryService.seedCategory("Dwelling");
 
-            Announcement hrubieszowAnnouncement = new Announcement();
-            hrubieszowAnnouncement.setCategory_id(dwellingCategory);
-            hrubieszowAnnouncement.setName("Free rooms");
-            hrubieszowAnnouncement.setUser_id(admin);
-            hrubieszowAnnouncement.setLocation("Hrubieszów");
-            hrubieszowAnnouncement.setPhone_number("123456789");
-            hrubieszowAnnouncement.setQuantity((float) 1);
-            hrubieszowAnnouncement.setDescription("I have 4 people worth of space, near Hrubieszów. Message for details.");
-            hrubieszowAnnouncement.setIs_hidden(false);
-            hrubieszowAnnouncement.setDatetime(new Date());
-            announcementRepository.save(hrubieszowAnnouncement);
+            Announcement busTransportAnnouncement = announcementService.seedAnnouncement(transportCategory,
+                    "Bus Transport", admin, "Korczowa", "123456789", (float) 30,
+                    "I own a bus, I offer transport from Korczowa border area to Warsaw and any city en-route",
+                    false, new Date());
 
-            Announcement zamoscAnnouncement = new Announcement();
-            zamoscAnnouncement.setCategory_id(dwellingCategory);
-            zamoscAnnouncement.setName("House for rent CHEAP");
-            zamoscAnnouncement.setUser_id(user);
-            zamoscAnnouncement.setLocation("50.71157202495769, 23.28084820760046");
-            zamoscAnnouncement.setPhone_number("123000789");
-            zamoscAnnouncement.setQuantity((float) 100);
-            zamoscAnnouncement.setDescription("I have a free house in Zamość, i can rent for very cheap, the house is big enough for three families.");
-            zamoscAnnouncement.setIs_hidden(false);
-            zamoscAnnouncement.setDatetime(new Date());
-            announcementRepository.save(zamoscAnnouncement);
+            Announcement packageTransportAnnouncement = announcementService.seedAnnouncement(transportCategory,
+                    "Package transport", user, "Warsaw", "123000789", (float) 20,
+                    "I can transport any package smaller than 1m each dimension to any of: Kiev, Lviv, Odessa",
+                    false, new Date());
 
-            PrivateMessage message1 = new PrivateMessage();
-            message1.setBuyer(user);
-            message1.setSeller(busTransportAnnouncement.getUser_id() == user);
-            message1.setDatetime(new Date());
-            message1.setMessage("I'd like to request 3 spots");
-            message1.setAnnouncement_id(busTransportAnnouncement);
-            privateMessageRepository.save(message1);
+            Announcement hrubieszowAnnouncement = announcementService.seedAnnouncement(dwellingCategory,
+                    "Free rooms", admin, "Hrubieszów", "123456789", (float) 1,
+                    "I have 4 people worth of space, near Hrubieszów. Message for details.",
+                    false, new Date());
 
-            PrivateMessage message2 = new PrivateMessage();
-            message2.setBuyer(user);
-            message2.setSeller(packageTransportAnnouncement.getUser_id() == user);
-            message2.setDatetime(new Date());
-            message2.setMessage("I have a package that's 1.05m long, can i still commission you?");
-            message2.setAnnouncement_id(packageTransportAnnouncement);
-            privateMessageRepository.save(message2);
+            Announcement zamoscAnnouncement = announcementService.seedAnnouncement(dwellingCategory,
+                    "House for rent CHEAP", user, "50.71157202495769, 23.28084820760046", "123000789",
+                    (float) 100, "I have a free house in Zamość, i can rent for very cheap, the house is big" +
+                            " enough for three families.", false, new Date());
 
+
+            PrivateMessage message1 = privateMessageService.seedPrivateMessage(user,
+                    busTransportAnnouncement.getUser_id() == user, new Date(),
+                    "I'd like to request 3 spots", busTransportAnnouncement);
+
+            PrivateMessage message2 = privateMessageService.seedPrivateMessage(user,
+                    packageTransportAnnouncement.getUser_id() == user, new Date(),
+                    "I have a package that's 1.05m long, can i still commission you?",
+                    packageTransportAnnouncement);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Couldn't finish an operation");
@@ -162,14 +96,12 @@ public class RestAdminPanelController {
         return result;
     }
 
-
-    @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_auth"}, method = RequestMethod.GET)
     public List<User> adminUserList() {
         return userRepository.findAll();
     }
 
-
-    @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/admin_auth"}, method = RequestMethod.POST)
     public User saveUser(@RequestBody User inputUser) {
         User user = userService.getLoggedInUser();
         if (user == null)
@@ -180,8 +112,7 @@ public class RestAdminPanelController {
         return userService.saveUser(inputUser);
     }
 
-
-    @RequestMapping(value = { "/admin_auth" }, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/admin_auth"}, method = RequestMethod.PUT)
     public User editUser(@RequestBody User inputUser) {
         User user = userService.getLoggedInUser();
         if (user == null)
@@ -189,8 +120,7 @@ public class RestAdminPanelController {
         return userService.saveUser(inputUser);
     }
 
-
-    @RequestMapping(value = { "/admin_auth/{id}" }, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/admin_auth/{id}"}, method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         User user = userService.getLoggedInUser();
         if (user == null)
@@ -200,19 +130,18 @@ public class RestAdminPanelController {
             userToDelete.get().setRoles(Collections.emptySet());
             userRepository.save(userToDelete.get());
             userRepository.delete(userToDelete.get());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @RequestMapping(value = { "/admin_announcement" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_announcement"}, method = RequestMethod.GET)
     public List<Announcement> adminAnnouncementList() {
         return announcementRepository.findAll();
     }
 
-
-    @RequestMapping(value = { "/admin_announcement/hide/{announcement_id}" }, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/admin_announcement/hide/{announcement_id}"}, method = RequestMethod.PUT)
     public Announcement hideAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
         if (announcement.isPresent()) {
@@ -222,26 +151,26 @@ public class RestAdminPanelController {
         return null;
     }
 
-
-    @RequestMapping(value = { "/admin_announcement/delete/{announcement_id}" }, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/admin_announcement/delete/{announcement_id}"}, method = RequestMethod.DELETE)
     public Map<String, String> deleteAnnouncement(@PathVariable("announcement_id") Integer announcement_id) {
         Optional<Announcement> announcement = announcementRepository.findById(announcement_id);
         Map<String, String> result = new HashMap<>();
-        if (announcement.isPresent()) {
+        try {
             announcementRepository.delete(announcement.get());
             result.put("result", "success");
-        } else {
+        } catch (Exception e) {
             result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         }
         return result;
     }
 
-    @RequestMapping(value = { "/admin_category" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_category"}, method = RequestMethod.GET)
     public List<Category> adminCategoryList() {
         return categoryRepository.findAll();
     }
 
-    @RequestMapping(value = {"/admin_category/create"}, method=RequestMethod.POST)
+    @RequestMapping(value = {"/admin_category/create"}, method = RequestMethod.POST)
     public Category createCategory(@RequestBody Category new_category) {
         new_category.setId(null);
         return categoryRepository.save(new_category);
@@ -251,26 +180,27 @@ public class RestAdminPanelController {
     public Map<String, String> deleteCategory(@PathVariable("category_id") Integer category_id) {
         Map<String, String> result = new HashMap<>();
         Optional<Category> category = categoryRepository.findById(category_id);
-        if (category.isPresent()) {
-            try {
-                categoryRepository.delete(category.get());
-            } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
-            }
-            result.put("result", "success");
-        } else {
+        if (categoryRepository.count() == 1) {
             result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        try {
+            categoryRepository.delete(category.get());
+            result.put("result", "success");
+        } catch (Exception e) {
+            result.put("result", "failure");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         }
         return result;
     }
 
-    @RequestMapping(value = { "/admin_priv" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin_priv"}, method = RequestMethod.GET)
     public List<PrivateMessage> adminPrivList() {
         return privateMessageRepository.findAll();
     }
 
 
-    @RequestMapping(value="/create_admin", method=RequestMethod.POST)
+    @RequestMapping(value = "/create_admin", method = RequestMethod.POST)
     public User createAdmin(@RequestBody User user) {
         user.setId(null);
         user.setAnnouncements(null);

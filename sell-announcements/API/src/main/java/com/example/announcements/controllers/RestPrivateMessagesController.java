@@ -1,9 +1,6 @@
 package com.example.announcements.controllers;
 
-
-import com.example.announcements.dto.AnnouncementDto;
 import com.example.announcements.models.Announcement;
-import com.example.announcements.models.Category;
 import com.example.announcements.models.PrivateMessage;
 import com.example.announcements.models.User;
 import com.example.announcements.repository.AnnouncementRepository;
@@ -15,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

@@ -5,7 +5,7 @@ import Navbar from 'Components/Navbar/Navbar';
 
 const Wrapper = styled.div`
   background-color: #f2f2f2;
-  height: 100vh;
+  height: 60vh;
 `;
 const RootTemplate = ({ children }) => (
   <Wrapper>
