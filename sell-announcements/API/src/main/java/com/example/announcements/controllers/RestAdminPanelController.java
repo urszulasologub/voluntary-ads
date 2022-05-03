@@ -63,8 +63,7 @@ public class RestAdminPanelController {
         return result;
     }
 
-
-    @RequestMapping(value = { "/admin/create_database"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/admin/create_database"}, method = RequestMethod.POST)
     public Map<String, String> createExampleDatabase() {
         Map<String, String> result = new HashMap<>();
         try {
